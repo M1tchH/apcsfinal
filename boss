@@ -1,0 +1,265 @@
+package bulletRider;
+
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Polygon;
+import java.awt.Toolkit;
+import java.awt.geom.AffineTransform;
+import java.lang.reflect.Parameter;
+import java.net.URL;
+import java.util.ArrayList;
+
+public class Boss {
+
+	private double x; // x and y position
+	private double y;
+	private int health = 50; // health for the boss
+	private Image ufo = null;
+	private double xv = 0;
+	private double yv = 0;
+	private int at = 2;
+	double a1_cnt = 0;
+	boolean attack = false;
+	double[][] bx = new double[6][9];
+	double[][] by = new double[6][9];
+	double[] bxv = { -2, -1.5, -1, -.5, 0, .5, 1, 1.5, 2 };
+	double[] byv = { .5, 1.3, 2, 2.3, 2.4, 2.3, 2, 1.3, .5 };
+	double a2_cnt = 0;
+	int a2_bc = 1;
+	int a2r = 0;
+	double d = (Math.random() * 20 + 20);
+	double dcnt = 0;
+	double px = .03;
+	double py = .03;
+	int xc;
+	int yc;
+	int[] Llx= new int[4];
+	int[] Lly= new int[4];
+	int[] Rlx= new int[4];
+	private AffineTransform tx = AffineTransform.getTranslateInstance(x, y);
+
+	double xo=300;
+	double yo=300;
+	double xe=299;
+	double ye=300;
+	
+	public Boss(int a, int b) {
+
+		x = a;
+		y = b;
+	}
+
+	public void update(double playerX, double playerY) {
+		xc = (int) (x + 95);
+		yc = (int) (y + 60);
+
+		if (attack == true) {
+			//attack 1
+		}
+			if (at == 1) {
+				if (a1_cnt <= 20) {
+					// paricles
+					a1_cnt += .25;
+
+				} else {
+					if (a1_cnt > 60) {
+						attack = false;
+						at = (int) (Math.random() * 2 + 1);
+						xv = 0;
+						yv = 0;
+						a1_cnt = 0;
+						d = (Math.random() * 20 + 20);
+					} else {
+						a1_cnt += .05;
+						if (xc - 10 < playerX && xc + 10 > playerX) {
+							xv = 0;
+						} else {
+							if (xc - 10 > playerX) {
+								xv = -1;
+							} else {
+
+								xv = 1;
+
+							}
+
+						}
+
+						if (yc + 140 < playerY && yc + 160 > playerY) {
+							yv = 0;
+						} else {
+							if (yc + 140 > playerY) {
+								yv = -.7;
+							} else {
+
+								yv = .7;
+
+							}
+
+						}
+					}
+				}
+			}
+			//attack 2
+			if (at == 2) {
+
+				if (xc > 298 && xc < 302) {
+					xv = 0;
+				} else if (xc < 298) {
+					xv += .05;
+
+				} else {
+					xv -= .05;
+				}
+				if (yc > 30 && yc < 40) {
+					yv = 0;
+				} else if (yc < 30) {
+					yv += .05;
+				} else {
+					yv -= .05;
+				}
+				if (xc > 298 && xc < 302 && yc > 30 && yc < 40) {
+					if (a2r == 0) {
+						for (int i = 0; i < 6; i++) {
+							for (int i2 = 0; i2 < 9; i2++) {
+								bx[i][i2] = xc;
+								by[i][i2] = yc;
+							}
+						}
+						a2r = 1;
+					}
+
+					if (by[5][0] > 200) {
+						attack = false;
+						at = (int) (Math.random() * 2 + 1);
+						d = (Math.random() * 20 + 20);
+						a2_cnt = 0;
+						a2_bc = 0;
+						a2r = 0;
+					}
+					a2_cnt += .5;
+
+					if (a2_cnt >= 20 && a2_bc < 6) {
+						a2_bc += 1;
+						a2_cnt = 0;
+					}
+
+					for (int i = 0; i < a2_bc; i++) {
+						for (int i2 = 0; i2 < 9; i2++) {
+							bx[i][i2] += bxv[i2];
+							by[i][i2] += byv[i2];
+						}
+					}
+				}
+
+			}
+			//attack 3
+			if (at == 3) {
+
+				if (xc > 298 && xc < 302) {
+					xv = 0;
+				} else if (xc < 298) {
+					xv += .05;
+
+				} else {
+					xv -= .05;
+				}
+				if (yc > 30 && yc < 40) {
+					yv = 0;
+				} else if (yc < 30) {
+					yv += .05;
+				} else {
+					yv -= .05;
+				}
+				if (xc > 298 && xc < 302 && yc > 30 && yc < 40) {
+					Polygon Ll=new Polygon(Llx,Lly,4);
+					
+				}else {
+					
+				}
+		} else {//end
+			if (dcnt > d) {
+				attack = true;
+				dcnt = 0;
+				xv = 0;
+				yv = 0;
+			}
+
+			dcnt += .05;
+			if (xc > 0 && xc < 600 && yc > 0 && yc < 600) {
+				xv += px;
+				yv += py;
+				if (xc < 10) {
+					x += 10;
+				} else if (xc > 590) {
+					x -= 10;					
+				} else if (xv > 3 || xv < -3) {
+					px *= -1;
+
+				}
+				if (yc < 10) {
+					y += 10;
+				} else if (yv > 1.2 || yv < -1.2) {
+					py *= -1;
+				}
+
+			}
+		}
+			if(xe>=400) {
+				xe=200;
+			}
+			xe+=1;
+			ye=(Math.sin(Math.acos((xo-xe)/100)))*100+300;
+		move(xv, yv); // moves the boss by (x, y)
+	}
+
+	public void draw(Graphics g) {
+		// draws the boss on the screen
+g.drawLine((int)xo,(int)yo,(int)xe,(int)ye);
+		Graphics2D g2 = (Graphics2D) g;
+		if (at == 1 && attack == true) {
+			g.fillRect((int) x + 80, (int) y + 65, 30, 250);
+		}
+		if (at == 2 && attack == true) {
+			for (int i = 0; i < a2_bc; i++) {
+				for (int i2 = 0; i2 < 9; i2++) {
+					g2.fillOval((int) bx[i][i2], (int) by[i][i2], 10, 10);
+				}
+			}
+		}
+		if (ufo == null)
+			ufo = getImage("ufo.png");
+		g2.drawImage(ufo, tx, null);
+
+	}
+
+	public Image getImage(String path) {
+		Image tempImage = null;
+		try {
+			URL imageURL = Boss.class.getResource(path);
+			tempImage = Toolkit.getDefaultToolkit().getImage(imageURL);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return tempImage;
+	}
+
+	public void move(double a, double b) // moves the boss by (a, b)
+	{
+		tx = AffineTransform.getTranslateInstance(x, y);
+		x += a;
+		y += b;
+		tx.scale(0.2, 0.2);
+		tx.translate(a, b);
+	}
+	
+
+	public double xc() 
+	{
+		return xc;
+	}
+
+	public double by() {
+		return yc;
+	}
+}
